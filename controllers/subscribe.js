@@ -32,36 +32,36 @@ export const subscribeCheckout = catchAsync(async (req, res, next) => {
   try {
     const { body } = req;
     const priceName = body?.data?.items[0]
-    // console.log(body?.data?.items[0]?.price?.name);
-    const existingSubscription = await subscribeModel.findOne({
-      "data.customer_id": body?.data?.customer_id,
-    });
-    if (existingSubscription) {
-      await subscribeModel.findOneAndUpdate(
-        { "data.customer_id": body?.data?.customer_id },
-        body,
-        { new: true, upsert: false }
-      );
-    } else {
-      const subscriptionEvent = new subscribeModel(body);
-      await subscriptionEvent.save();
-    }
+    console.log(body?.data?.items[0]?.price?.name);
+    // const existingSubscription = await subscribeModel.findOne({
+    //   "data.customer_id": body?.data?.customer_id,
+    // });
+    // if (existingSubscription) {
+    //   await subscribeModel.findOneAndUpdate(
+    //     { "data.customer_id": body?.data?.customer_id },
+    //     body,
+    //     { new: true, upsert: false }
+    //   );
+    // } else {
+    //   const subscriptionEvent = new subscribeModel(body);
+    //   await subscriptionEvent.save();
+    // }
   
-    const productCollection = getUser(body?.data?.customer_id);
-    const firstPage = await productCollection?.next();
-    const customerId = firstPage[0]?.id || body?.data?.customer_id;
-    const customerEmail = firstPage[0]?.email || "";
-    // console.log(body?.data?.customer_id,"body?.data?.customer_id",customerEmail)
-    await subscribeModel.findOneAndUpdate(
-      { "data.customer_id": customerId },
-      { email: customerEmail },
-      { new: true }
-    );
-    await User.findOneAndUpdate(
-      { email: customerEmail },
-      { customer_id: customerId, activeStatus: "active",subscriptionStatus:priceName?.price?.name },
-      { new: true }
-    );
+    // const productCollection = getUser(body?.data?.customer_id);
+    // const firstPage = await productCollection?.next();
+    // const customerId = firstPage[0]?.id || body?.data?.customer_id;
+    // const customerEmail = firstPage[0]?.email || "";
+    // // console.log(body?.data?.customer_id,"body?.data?.customer_id",customerEmail)
+    // await subscribeModel.findOneAndUpdate(
+    //   { "data.customer_id": customerId },
+    //   { email: customerEmail },
+    //   { new: true }
+    // );
+    // await User.findOneAndUpdate(
+    //   { email: customerEmail },
+    //   { customer_id: customerId, activeStatus: "active",subscriptionStatus:priceName?.price?.name },
+    //   { new: true }
+    // );
     res.json(body);
   } catch (e) {
     console.error(e);
@@ -75,29 +75,30 @@ export const cancelSubscription = catchAsync(async (req, res, next) => {
       "data.customer_id": user.customer_id,
     });
     const response = await paddle.subscriptions.get(subscriptionData?.data?.id);
-    if (response.status === "canceled") {
-      res.json({ message: "Transactions already cancelled" });
-      return;
-    }
-    const subscription = await paddle.subscriptions.cancel(
-      subscriptionData?.data?.id,
-      { effectiveFrom: "immediately" }
-    );
-    const data = {
-      id: subscription.id,
-      status: subscription?.status,
-      canceled_at: subscription.canceled_at,
-    };
-    await subscribeModel.findOneAndUpdate(
-      { "data.customer_id": user.customer_id },
-      data,
-      { new: true, upsert: false }
-    );
-    await User.findOneAndUpdate(
-      { customer_id: user?.customer_id },
-      { activeStatus: "no-active" },
-      { new: true }
-    );
+    console.log(response)
+    // if (response.status === "canceled") {
+    //   res.json({ message: "Transactions already cancelled" });
+    //   return;
+    // }
+    // const subscription = await paddle.subscriptions.cancel(
+    //   subscriptionData?.data?.id,
+    //   { effectiveFrom: "immediately" }
+    // );
+    // const data = {
+    //   id: subscription.id,
+    //   status: subscription?.status,
+    //   canceled_at: subscription.canceled_at,
+    // };
+    // await subscribeModel.findOneAndUpdate(
+    //   { "data.customer_id": user.customer_id },
+    //   data,
+    //   { new: true, upsert: false }
+    // );
+    // await User.findOneAndUpdate(
+    //   { customer_id: user?.customer_id },
+    //   { activeStatus: "no-active" },
+    //   { new: true }
+    // );
 
     res.json({ message: "Cancelled Successfully!" });
   } catch (e) {
