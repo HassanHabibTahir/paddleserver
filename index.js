@@ -40,7 +40,7 @@ export const io = new Server(server, {
     credentials: true,
   },
 });
-export const sgMails = sgMail.setApiKey(process.env.EMAIL_KEY);
+// export const sgMails = sgMail.setApiKey(process.env.EMAIL_KEY);
 
 // app.options("*", cors());
 
