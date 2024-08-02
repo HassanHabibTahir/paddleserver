@@ -17,11 +17,12 @@ import { Environment, Paddle } from "@paddle/paddle-node-sdk";
 // });
 // console.log(paddle)
 
-const paddle = new Paddle(process.env.PADDLE_API_KEY, {
-   vendorId: '21507',
+const paddle = new Paddle('613e977d58533c361c86be73f2777e3ec61302d8db136e10f2', {
+  //  vendorId: '21507',
   environment: Environment.sandbox,
   logLevel: "verbose",
 });
+
 async function getUser(customerId) {
   const productCollection = paddle.customers.list({ id: customerId });
   return productCollection;
@@ -71,11 +72,15 @@ export const subscribeCheckout = catchAsync(async (req, res, next) => {
 export const cancelSubscription = catchAsync(async (req, res, next) => {
   try {
     const user = req.user;
-    const subscriptionData = await subscribeModel.findOne({
-      "data.customer_id": user.customer_id,
-    });
-    const response = await paddle.subscriptions.get(subscriptionData?.data?.id);
-    console.log(response)
+    const productCollection = await getUser('ctm_01j465hd4fbdcn6t33d15wzzx2');
+    const firstPage = await productCollection?.next();
+    // const subscriptionData = await subscribeModel.findOne({
+    //   "data.customer_id": user.customer_id,
+    // });
+    // subscriptionData?.data?.id
+    // const response = await paddle.subscriptions.get("ctm_01j465hd4fbdcn6t33d15wzzx2");
+    // console.log(response)
+    res.json(firstPage)
     // if (response.status === "canceled") {
     //   res.json({ message: "Transactions already cancelled" });
     //   return;
@@ -100,7 +105,7 @@ export const cancelSubscription = catchAsync(async (req, res, next) => {
     //   { new: true }
     // );
 
-    res.json({ message: "Cancelled Successfully!" });
+    // res.json({ message: "Cancelled Successfully!" });
   } catch (e) {
     console.log(e);
   }

@@ -1,5 +1,5 @@
 import express from "express";
-import passport from "passport";
+// import passport from "passport";
 
 import { cancelSubscription, subscribeCheckout } from "../controllers/subscribe.js";
 
@@ -18,7 +18,7 @@ export const subscribeRouter = express.Router();
 
 subscribeRouter.get(
   "/cancel-subscription",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   cancelSubscription
 );
 

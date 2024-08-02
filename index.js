@@ -14,7 +14,7 @@ import { Strategy as FacebookStrategy } from "passport-facebook";
 import { errorHandler } from "./middleware/ErrorHandler.js";
 // import { authRouter } from "./routes/auth.js";
 // import FacebookPages from "./models/facbookPagesModel.js";
-import passport from "./middleware/Passport.js";
+// import passport from "./middleware/Passport.js";
 import { subscribeRouter } from "./routes/subscribe.js";
 
 // import User from "./models/user.js";
@@ -72,7 +72,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(passport.initialize());
+// app.use(passport.initialize());
 
 // app.use("/api/v1/user", authRouter);
 app.use("/api/v1/paddle-subscribe", subscribeRouter);
